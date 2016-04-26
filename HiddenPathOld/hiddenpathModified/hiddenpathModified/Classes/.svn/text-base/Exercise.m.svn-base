@@ -1,0 +1,317 @@
+//
+//  Exercise.m
+//  TABBAR
+//
+//  Created by openxcell technolabs on 8/25/11.
+//  Copyright 2011 jn. All rights reserved.
+//sfsfsd
+
+#import "Exercise.h"
+#import "Homepage.h"
+#import "DatabaseMethod.h"
+
+
+@implementation Exercise
+@synthesize show_nvg;
+
+#pragma mark -
+#pragma mark View lifecycle
+//asdjkakdhjk
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+	
+	
+	ary_month=[[NSMutableArray alloc]init];
+	obj_databasemethod=[[DatabaseMethod alloc]init];
+	tbl_exercise.backgroundColor=[UIColor clearColor];
+	
+	[ary_month addObject:@"Month 1-Law of Attraction"];
+	[ary_month addObject:@"Month 2-Goals"];
+	[ary_month addObject:@"Month 3-Healthy Mind"];
+	[ary_month addObject:@"Month 4-Healthy Body"];
+	[ary_month addObject:@"Month 5-Healthy Soul"];
+	[ary_month addObject:@"Month 6-Wealth"];
+	[ary_month addObject:@"Month 7-Forgiveness"];
+	[ary_month addObject:@"Month 8-We Are All Connected"];
+	[ary_month addObject:@"Month 9-Contrast"];
+	[ary_month addObject:@"Month 10-Gratitude"];
+	[ary_month addObject:@"Month 11-Gift of Giving"];
+	[ary_month addObject:@"Month 12-Our End Is Your Beginning"];
+	tbl_exercise.backgroundColor=[UIColor clearColor];
+	
+	tbl_exercise.hidden=FALSE;
+
+	if(!show_nvg)
+	{
+		nvg_bar.hidden=NO;
+		
+	}
+	else 
+	{
+		self.navigationItem.title=@"Select exercise";
+		nvg_bar.hidden=YES;
+	}
+
+	
+
+    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+	
+	
+	self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc]initWithTitle:@"Exercise" style:UIBarButtonItemStylePlain target:self action:@selector(btn_picker_clicked:)];
+		
+}
+
+-(IBAction)btn_seleted:(id)sender
+{
+	pickeview.hidden=NO;
+	lbl.hidden=NO;
+	tbl_exercise.hidden=YES;
+}
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)thePickerView 
+{
+	
+	return 1;
+}
+-(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row
+	  inComponent:(NSInteger)component
+{
+	Month1=row+1;
+	[self DatafromExercise];
+	//pickeview.hidden=NO;
+	tbl_exercise.hidden=NO;
+	[tbl_exercise reloadData];
+	
+}
+
+
+-(void)DatafromExercise
+{
+	
+	NSMutableDictionary *dict_Exe=[obj_databasemethod RandomDataSerching_FromExercise:Month1];
+	
+	//[Ary_Exercise addObject:[dict_Exe valueForKey:@"exercise"]];
+	Ary_Exercise=[[dict_Exe objectForKey:@"exercise"] retain];
+	//Ary_Exercise=[obj_databasemethod RandomDataSerching_FromExercise:1];
+	titleStr=[dict_Exe objectForKey:@"title"];
+	Ary_ExeDesc=[dict_Exe objectForKey:@"description"];
+	pickeview.hidden=TRUE;
+	lbl.hidden=TRUE;
+	
+}
+
+
+-(IBAction)btn_homepage_clicked:(id)sender
+{
+	Homepage *obj_home=[[Homepage alloc]initWithNibName:@"Homepage" bundle:nil];
+	[self.navigationController pushViewController:obj_home animated:YES];		
+	[self.view addSubview:obj_home.view];
+	[self.view removeFromSuperview];
+}
+- (NSString *)pickerView:(UIPickerView *)thePickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component 
+{
+	return [ary_month objectAtIndex:row];
+}
+-(IBAction)btn_picker_clicked:(id)sender
+{
+	
+	pickeview.hidden=NO;
+	
+	
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath;
+{
+	
+	cell.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"CellBK.png"]];
+	cell.textLabel.backgroundColor = [UIColor clearColor];
+	
+}
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+	return [ary_month count];
+
+}
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	pickeview.hidden=YES;
+}
+/*
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+}
+*/
+/*
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+}
+*/
+/*
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+}
+*/
+/*
+// Override to allow orientations other than the default portrait orientation.
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    // Return YES for supported orientations.
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+*/
+
+
+#pragma mark -
+#pragma mark Table view data source
+//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section;   // custom view for header. will be adjusted to default or specified header height
+//{
+//	UIView *myview=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 50)];
+//	myview.backgroundColor=[UIColor ];
+//	
+//	btn_picker=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+//	[btn_picker addTarget:self action:@selector(btn_picker_clicked:)forControlEvents:UIControlEventTouchUpInside];
+//	[btn_picker setTitle:@"Show Exercisr"forState:UIControlStateNormal];
+//	[btn_picker setFrame:CGRectMake(10, 01, 150, 30)];
+//	[myview addSubview:btn_picker];
+//	
+//	return myview;
+//							
+//}
+
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    // Return the number of sections.
+    return 1;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+	CGSize actualSize = [[Ary_ExeDesc objectAtIndex:indexPath.row] sizeWithFont:[UIFont fontWithName:@"Helvetica" size:20]
+															  constrainedToSize:CGSizeMake(300, 9999) lineBreakMode:UILineBreakModeWordWrap];	
+	// Use the actual width and height needed for our text to create a container
+	CGSize textLabelSize = {actualSize.width, actualSize.height};
+	return textLabelSize.height+5;
+	
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    // Return the number of rows in the section.
+    return [Ary_Exercise count];
+}
+
+
+// Customize the appearance of table view cells.
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    static NSString *CellIdentifier = @"Cell";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+    }
+    
+    // Configure the cell...
+	cell.textLabel.text=[Ary_ExeDesc objectAtIndex:indexPath.row];
+	CGSize actualSize = [[Ary_ExeDesc objectAtIndex:indexPath.row] sizeWithFont:[UIFont fontWithName:@"Helvetica" size:10]
+						 constrainedToSize:CGSizeMake(300, 9999) lineBreakMode:UILineBreakModeWordWrap];	
+	// Use the actual width and height needed for our text to create a container
+	CGSize textLabelSize = {actualSize.width, actualSize.height};
+	cell.textLabel.frame = CGRectMake(0,0,300,textLabelSize.height+5);
+	cell.textLabel.lineBreakMode = UILineBreakModeWordWrap;
+	cell.textLabel.numberOfLines = 0;
+    [cell setFont:[UIFont fontWithName:@"Verdana" size:16]];
+    return cell;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+	
+			
+	//	NSString *str=[NSString stringWithFormat:@"Exercise of %@",titleStr];
+		
+	return titleStr;
+		
+}	
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+	
+	return 40;
+}
+
+/*
+// Override to support conditional editing of the table view.
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Return NO if you do not want the specified item to be editable.
+    return YES;
+}
+*/
+
+
+/*
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        // Delete the row from the data source.
+        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    }   
+    else if (editingStyle == UITableViewCellEditingStyleInsert) {
+        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
+    }   
+}
+*/
+
+
+/*
+// Override to support rearranging the table view.
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+}
+*/
+
+
+/*
+// Override to support conditional rearranging of the table view.
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Return NO if you do not want the item to be re-orderable.
+    return YES;
+}
+*/
+
+
+#pragma mark -
+#pragma mark Table view delegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Navigation logic may go here. Create and push another view controller.
+    /*
+    <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
+    // ...
+    // Pass the selected object to the new view controller.
+    [self.navigationController pushViewController:detailViewController animated:YES];
+    [detailViewController release];
+    */
+}
+
+
+#pragma mark -
+#pragma mark Memory management
+
+- (void)didReceiveMemoryWarning {
+    // Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
+    
+    // Relinquish ownership any cached data, images, etc. that aren't in use.
+}
+
+- (void)viewDidUnload {
+    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
+    // For example: self.myOutlet = nil;
+}
+
+
+- (void)dealloc {
+    [super dealloc];
+}
+
+
+@end
+

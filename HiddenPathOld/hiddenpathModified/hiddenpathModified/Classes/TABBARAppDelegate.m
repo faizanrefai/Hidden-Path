@@ -1,0 +1,214 @@
+//
+//  TABBARAppDelegate.m
+//  TABBAR
+//
+//  Created by openxcell technolabs on 6/18/11.
+//  Copyright 2011 jn. All rights reserved.
+//
+
+#import "TABBARAppDelegate.h"
+#import <QuartzCore/QuartzCore.h>
+#import "Loginview.h"
+
+
+//250
+
+@implementation TABBARAppDelegate
+
+@synthesize window;
+@synthesize tabBarController;
+@synthesize Viewnavigation,CurMonth_Ary,isStatus,isStatusGrati,isStatusAffr,isStatusToDo;
+@synthesize CounterAtile,islogout,isforgot,istoday,isTodo,insertdatecal,loginIdStr,isRememberLogin,fromHome;
+
+#pragma mark -
+#pragma mark Application lifecycle
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
+    
+    // Override point for customization after application launch.
+	// Add the tab bar controller's view to the window and display.
+	//[[UIApplication sharedApplication]setStatusBarHidden:YES animated:YES];
+	
+	[self getdatabasepath];
+	[self CheckedAndCreateDatabase];
+
+	
+	application.statusBarHidden=YES;
+	obj_logview=[[Loginview alloc]initWithNibName:@"Loginview"bundle:nil];
+
+	
+	insertdatecal=@"";
+	[self.window addSubview:tabBarController.view];
+    [self.window makeKeyAndVisible];
+	
+		
+	[self.window addSubview:obj_logview.view];
+	Class cls = NSClassFromString(@"UILocalNotification");
+	if (cls) {
+        UILocalNotification *notification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
+        
+        if (notification)
+        {
+            NSString *reminderText = [notification.userInfo objectForKey:@"matchDateandTime"];
+			[application presentLocalNotificationNow:notification];
+
+           // [self showReminder:reminderText];
+        }
+		
+    }
+
+	return YES;
+}
+
+
+
+- (void)application:(UIApplication *)app didReceiveLocalNotification:(UILocalNotification *)notif {
+	//notif.alertAction;
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Hidden Path Alert" 
+                                                        message:notif.alertBody delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:@"show Me",nil];
+    [alertView show];
+    [alertView release];
+	
+	//UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Info" 
+//                                                        message:@"Hidden Path notification" delegate:nil
+//                                              cancelButtonTitle:@"OK"
+//                                              otherButtonTitles:nil];
+//    [alertView show];
+//    [alertView release];
+//	
+	
+   // NSString *itemName = [notif.userInfo objectForKey:ToDoItemKey]
+//	
+//    [viewController displayItem:itemName];  // custom method
+//	
+//    application.applicationIconBadgeNumber = notification.applicationIconBadgeNumber-1;
+	
+}
+
+- (void)showReminder:(NSString *)text 
+{
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Hidden Path Alert for To-do Reminder" 
+                                                        message:text delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+    [alertView show];
+    [alertView release];
+}
+
+-(NSString *)getdatabasepath;
+{
+	DBName=@"Hiddenpath_DB.sqlite";
+	NSArray *Documentpath=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSString *DocumentDir=[Documentpath objectAtIndex:0];
+	DBPath=[DocumentDir stringByAppendingPathComponent:DBName];
+	return DBPath;
+	
+}
+-(void)CheckedAndCreateDatabase
+{
+	// Check if the SQL database has already been saved to the users phone, if not then copy it over
+	BOOL success;
+	success=FALSE;
+	
+	
+	// Create a FileManager object, we will use this to check the status
+	// of the database and to copy it over if required
+	
+	NSFileManager *filemanager=[NSFileManager defaultManager];
+	
+	// Check if the database has already been created in the users filesystem
+	
+	success=[filemanager fileExistsAtPath:DBPath];
+	
+	
+	// If the database already exists then return without doing anything
+	if(success)
+		return ;
+	// If not then proceed to copy the database from the application to the users filesystem
+	NSString *databasePathFromApp = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:DBName];
+	
+	// Copy the database from the package to the users filesystem
+	[filemanager copyItemAtPath:databasePathFromApp toPath:DBPath error:nil];
+	
+	[filemanager release];
+	
+	
+}
+
+
+- (void)applicationWillResignActive:(UIApplication *)application {
+    /*
+     Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
+     Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+     */
+	}
+
+
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    /*
+     Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
+     If your application supports background execution, called instead of applicationWillTerminate: when the user quits.
+     */
+}
+
+
+- (void)applicationWillEnterForeground:(UIApplication *)application {
+    /*
+     Called as part of  transition from the background to the inactive state: here you can undo many of the changes made on entering the background.
+     */
+}
+
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    /*
+     Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+     */
+	
+}
+
+
+- (void)applicationWillTerminate:(UIApplication *)application {
+    /*
+     Called when the application is about to terminate.
+     See also applicationDidEnterBackground:.
+     */
+}
+
+
+#pragma mark -
+#pragma mark UITabBarControllerDelegate methods
+
+/*
+// Optional UITabBarControllerDelegate method.
+- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
+}
+*/
+
+/*
+// Optional UITabBarControllerDelegate method.
+- (void)tabBarController:(UITabBarController *)tabBarController didEndCustomizingViewControllers:(NSArray *)viewControllers changed:(BOOL)changed {
+}
+*/
+
+
+#pragma mark -
+#pragma mark Memory management
+
+- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
+    /*
+     Free up as much memory as possible by purging cached data objects that can be recreated (or reloaded from disk) later.
+     */
+}
+	
+
+- (void)dealloc {
+    [tabBarController release];
+    [window release];
+    [super dealloc];
+}
+
+@end
+

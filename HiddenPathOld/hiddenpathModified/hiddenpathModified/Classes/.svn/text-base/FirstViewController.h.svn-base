@@ -1,0 +1,90 @@
+//
+//  FirstViewController.h
+//  TABBAR
+//
+//  Created by openxcell technolabs on 6/18/11.
+//  Copyright 2011 jn. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "TABBARAppDelegate.h"
+#import<sqlite3.h>
+#import "DatabaseMethod.h"
+
+
+
+@interface FirstViewController : UIViewController<UIApplicationDelegate,UIScrollViewDelegate,UITableViewDataSource,UITableViewDelegate,UITextViewDelegate,UITextFieldDelegate,UIAlertViewDelegate> 
+{
+	IBOutlet UITableView *tbl_journal;
+	IBOutlet UIButton *btn_Home;
+	IBOutlet UIImageView *imgview;
+	IBOutlet UIImageView *tblimgview;
+
+	
+	UIView *footerview;
+	UIView *headerview;
+	UIAlertView *alert;
+	NSMutableArray  *Ary_Affirmation;
+	NSMutableArray *Ary_Todo;
+	NSMutableArray *Ary_date;
+	UITextView *txtview_footer;
+	
+	CGFloat animatedDistance;
+	
+	NSMutableArray *Ary_goal;
+	NSMutableArray *Ary_Quoates;
+	NSMutableArray *Fill_ary;
+	NSMutableArray *fill_goal_ary;
+	NSMutableArray *fill_affi_ary;
+	NSMutableArray *fill_gra_ary;
+	UILabel *lbl_quotation;
+	UILabel *lbl_date;
+	UILabel *lbl_day;
+	UILabel *lbl_execiseheding;
+	
+	UITextField *textf4;
+	UITextField *textf3;
+	UITextField *textf1;
+	UITextField *textf2;
+	int Month1;
+	
+	NSMutableArray *Ary_Master;
+	NSString *titleStr;
+	NSMutableArray *Ary_Exercise;
+	NSMutableArray *Ary_ExeDesc;
+	NSMutableArray *gratitude_arr;
+	NSMutableArray *Ary_AffDate;
+	NSMutableArray *Ary_GratiDate;
+	NSMutableArray *Ary_GoalDate;
+		
+	DatabaseMethod *obj_databasemethod;
+	
+	
+	BOOL flage;
+	BOOL isMaster;
+	
+	
+
+	
+	TABBARAppDelegate *obj_AppDelegate;
+		
+
+	
+	int RandomAffir;
+	int RandomTodo;
+	int RandomGoal;
+	
+}
+@property(nonatomic,retain)IBOutlet UITableView *tbl_journal;
+@property(nonatomic,retain)UITextView *txtview_footer;
+@property(nonatomic,retain)NSString *str_Calendar;
+@property(nonatomic,retain)NSMutableArray *Selecteddate_Ary;
+@property(nonatomic)BOOL isMaster;
+
+-(IBAction)btn_Home_clicked:(id)sender;
+- (void)scheduleNotification ;
+
+
+
+
+@end
